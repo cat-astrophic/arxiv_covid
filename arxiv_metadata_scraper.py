@@ -134,23 +134,17 @@ with open('C:/Users/User/Documents/Data/arxiv_covid/category_data.txt', 'w') as 
     
         file.write('%s\n' % entry)
 
-file.close()
-
 with open('C:/Users/User/Documents/Data/arxiv_covid/submission_dates.txt', 'w') as file:
     
     for entry in submission_dates:
     
         file.write('%s\n' % entry)
 
-file.close()
-
 with open('C:/Users/User/Documents/Data/arxiv_covid/updated_dates.txt', 'w') as file:
     
     for entry in updated_dates:
     
         file.write('%s\n' % entry)
-
-file.close()
 
 with open('C:/Users/User/Documents/Data/arxiv_covid/affiliation_data.txt', 'w', encoding = 'utf-8') as file:
     
@@ -159,14 +153,10 @@ with open('C:/Users/User/Documents/Data/arxiv_covid/affiliation_data.txt', 'w', 
         entry = str(affiliation_data[row])
         file.write('%s\n' % entry)
 
-file.close()
-
 with open('C:/Users/User/Documents/Data/arxiv_covid/authorship_data.txt', 'w', encoding = 'utf-8') as file:
     
     for row in range(len(authorship_data)):
         
         entry = str(authorship_data[row])
         file.write('%s\n' % entry)
-
-file.close()
 
