@@ -20,9 +20,8 @@ affiliation_data = []
 # Creating the components of the query url
 
 base = 'http://export.arxiv.org/api/query?search_query=all:'
-mid1 = '+ANDNOT+ti:'
-mid2 = '&start='
-end = '&max_results=1000'
+mid = '&start='
+end = '&max_results=1000&sortBy=submittedDate&sortOrder=descending'
 
 # List of year month combinations for id query
 
@@ -36,12 +35,13 @@ yymm = [y+m for y in years for m in months]
 
 # Running the outer loop
 
-for ym in yymm[0:352]:
+for ym in yymm:
     
-    # Resetting start to 0 for each ym in yymm
+    # Resetting start, flags, and yflag to 0 for each ym in yymm
     
-    start = 0
-    flags = 0
+    start = 0 # part of the url
+    flags = 0 # indicator that there is no more data to harvest
+    yflag = 0 # year indicator for turning off current query
     
     # Outer loop progress checker
     
@@ -49,11 +49,11 @@ for ym in yymm[0:352]:
     
     # Running the inner loop
     
-    while start < 17000 and flags < 10:
+    while flags < 10 and yflag < 1:
         
         # Specifying the url
         
-        url = base + ym + mid1 + ym + mid2 + str(start) + end
+        url = base + ym + mid + str(start) + end
         
         # Inner loop progress checker
         
@@ -75,12 +75,34 @@ for ym in yymm[0:352]:
             
             # If the query does not return data, increase the value of flags
             
-            flags += 1
+            flags += 1        
         
         # If the query returned data, parse it
         
         else:
         
+            # Checking to make sure all entries are from the correct year (uses the sortOrder parameter)
+            
+            if str(raw_data[len(raw_data)-1].find_all('published')[0])[13:15] != ym[:2]:
+
+                # Initialize a flag called finished as false
+                
+                finished = False
+                
+                # Find the cut-off for correct year
+                
+                while finished != True:
+                    
+                    for raw in raw_data:
+                        
+                        if str(raw.find_all('published')[0])[13:15] != ym[:2]:
+                            
+                            finished = True
+                            ind = raw_data.index(raw) - 1
+                            
+                raw_data = raw_data[0:ind]
+                yflag = 1
+            
             # Extracting the desired metadata from each paper and appending it to the appropriate lists
             
             for raw in raw_data:
@@ -127,34 +149,34 @@ for ym in yymm[0:352]:
             
             start = start + 1000
 
-# Writing results to txt files
+# Writing results as .txt files
 
-with open('C:/Users/User/Documents/Data/arxiv_covid/category_data.txt', 'w') as file:
+with open('C:/Users/M535040/Documents/Data/arxiv_covid/category_data.txt', 'w') as file:
     
     for entry in category_data:
     
         file.write('%s\n' % entry)
 
-with open('C:/Users/User/Documents/Data/arxiv_covid/submission_dates.txt', 'w') as file:
+with open('C:/Users/M535040/Documents/Data/arxiv_covid/submission_dates.txt', 'w') as file:
     
     for entry in submission_dates:
     
         file.write('%s\n' % entry)
 
-with open('C:/Users/User/Documents/Data/arxiv_covid/updated_dates.txt', 'w') as file:
+with open('C:/Users/M535040/Documents/Data/arxiv_covid/updated_dates.txt', 'w') as file:
     
     for entry in updated_dates:
     
         file.write('%s\n' % entry)
 
-with open('C:/Users/User/Documents/Data/arxiv_covid/affiliation_data.txt', 'w', encoding = 'utf-8') as file:
+with open('C:/Users/M535040/Documents/Data/arxiv_covid/affiliation_data.txt', 'w', encoding = 'utf-8') as file:
     
     for row in range(len(affiliation_data)):
         
         entry = str(affiliation_data[row])
         file.write('%s\n' % entry)
 
-with open('C:/Users/User/Documents/Data/arxiv_covid/authorship_data.txt', 'w', encoding = 'utf-8') as file:
+with open('C:/Users/M535040/Documents/Data/arxiv_covid/authorship_data.txt', 'w', encoding = 'utf-8') as file:
     
     for row in range(len(authorship_data)):
         
