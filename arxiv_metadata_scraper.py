@@ -2,7 +2,7 @@
 
 """ NOTE TO USERS:
     
-    Specify the directory for storing data - lines 129, 137, 145, 153, 162 """
+    Specify the directory for storing data - lines 132, 140, 148, 156, 165 """
 
 # Importing required modules
 
@@ -20,7 +20,8 @@ affiliation_data = []
 # Creating the components of the query url
 
 base = 'http://export.arxiv.org/api/query?search_query=all:'
-mid = '&start='
+mid1 = '+ANDNOT+ti:'
+mid2 = '&start='
 end = '&max_results=1000'
 
 # List of year month combinations for id query
@@ -48,11 +49,11 @@ for ym in yymm[0:352]:
     
     # Running the inner loop
     
-    while start < 17000 and flags < 5:
+    while start < 17000 and flags < 10:
         
         # Specifying the url
         
-        url = base + ym + mid + str(start) + end
+        url = base + ym + mid1 + ym + mid2 + str(start) + end
         
         # Inner loop progress checker
         
